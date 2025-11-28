@@ -53,6 +53,12 @@ Demo GIF
 
 See `assets/demo.gif` for a short demo clip (placeholder). Replace with your own recorded clip if desired.
 
+Demo video
+
+A recorded demo video is available here:
+
+- https://drive.google.com/file/d/1O__Tuy4sE4nl_UV8Xpi01MxQvPeSV1NK/view?usp=drivesdk
+
 License: MIT-style for demo purposes.
 # PT-3 Fullstack Demo
 
