@@ -57,9 +57,7 @@ test('e2e: uploads, admin role change, chart drilldown', async ({ page }) => {
   // sign out by clearing token and showing auth UI to avoid flaky logout button clicks
   await page.evaluate(() => { localStorage.removeItem('pt3_token'); if(window.showAuth) showAuth() })
   await page.waitForSelector('#btn-login', { state: 'visible', timeout: 10000 })
-  await page.fill('#login-user', 'admin')
-  await page.fill('#login-pass', 'adminpass')
-  await page.click('#btn-logout')
+  // proceed with admin actions via API login (no UI login click required)
   // login as admin via API and set token in localStorage to avoid UI flakiness
   const apiAdminLogin = await page.request.post('/api/login', { data: JSON.stringify({ username: 'admin', password: 'adminpass' }), headers: { 'Content-Type': 'application/json' } })
   const apiAdminJson = await apiAdminLogin.json()
