@@ -15,7 +15,10 @@ test('e2e: uploads, admin role change, chart drilldown', async ({ page }) => {
   await page.fill('#login-user', user)
   await page.fill('#login-pass', pass)
   await page.click('#btn-login')
-  await page.waitForSelector('#btn-logout')
+  // wait for token to appear in localStorage as a more reliable signal that login completed
+  await page.waitForFunction(() => !!window.localStorage.getItem('pt3_token'), null, { timeout: 10000 })
+  // then wait for the logout button to become visible (if the UI toggles it)
+  await page.waitForSelector('#btn-logout', { state: 'visible', timeout: 10000 })
 
   // create an item via API and upload a fixture file using Playwright request
   const loginRes = await page.request.post('/api/login', { data: JSON.stringify({ username: user, password: pass }), headers: { 'Content-Type': 'application/json' } })
@@ -55,8 +58,10 @@ test('e2e: uploads, admin role change, chart drilldown', async ({ page }) => {
   await page.fill('#login-user', 'admin')
   await page.fill('#login-pass', 'adminpass')
   await page.click('#btn-login')
-  // wait for logout button (login completed), then refresh /me to reveal admin controls
-  await page.waitForSelector('#btn-logout')
+  // wait for token to appear in localStorage as a more reliable signal that login completed
+  await page.waitForFunction(() => !!window.localStorage.getItem('pt3_token'), null, { timeout: 10000 })
+  // then wait for the logout button to become visible before proceeding
+  await page.waitForSelector('#btn-logout', { state: 'visible', timeout: 10000 })
   await page.evaluate(() => { if(window.loadMeAndSetup) window.loadMeAndSetup() })
   await page.waitForSelector('#btn-admin')
   await page.click('#btn-admin')
