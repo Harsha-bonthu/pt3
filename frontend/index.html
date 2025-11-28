@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PT-3 Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo">PT-3</div>
+  </header>
+  <main class="container">
+    <h1 class="sr-only">PT-3 Demo</h1>
+    <div id="auth">
+      <div class="card">
+        <h2>Register</h2>
+        <input id="reg-user" placeholder="username" />
+        <input id="reg-pass" type="password" placeholder="password" />
+        <button id="btn-reg">Register</button>
+      </div>
+
+      <div class="card">
+        <h2>Login</h2>
+        <input id="login-user" placeholder="username" />
+        <input id="login-pass" type="password" placeholder="password" />
+        <button id="btn-login">Login</button>
+      </div>
+    </div>
+
+    <div id="app" style="display:none;">
+      <div class="app-grid">
+        <section class="left">
+          <div class="controls">
+            <div>
+              <button id="btn-logout" aria-label="Logout" class="btn ghost">Logout</button>
+              <button id="btn-admin" style="display:none;margin-left:8px;" aria-label="Open admin panel" aria-haspopup="dialog" class="btn primary">Admin</button>
+            </div>
+            <div class="chart-controls">
+              <button id="btn-toggle-chart" class="btn ghost">Toggle Pie/Bar</button>
+              <span id="chart-hint" class="muted">Click a bar/pie to drill down</span>
+            </div>
+          </div>
+
+          <div class="card chart-card">
+            <canvas id="chart" width="600" height="320" role="img" aria-label="Items by category chart"></canvas>
+          </div>
+
+          <h3>Your Items</h3>
+          <div id="items" class="items-grid"></div>
+          <div id="pager" class="pager"></div>
+        </section>
+
+        <aside class="right">
+          <div class="card">
+            <h3>Add / Upload</h3>
+            <input id="item-title" placeholder="Item title" />
+            <input id="item-category" placeholder="Category" />
+            <textarea id="item-desc" placeholder="Description"></textarea>
+            <input id="item-file" type="file" />
+            <div style="display:flex;gap:8px;margin-top:8px"><button id="btn-add" class="btn primary">Add</button><button id="btn-clear" class="btn ghost">Clear</button></div>
+          </div>
+
+          <div class="card info">
+            <h4>Tips</h4>
+            <ul>
+              <li>Click chart segments to view items by category.</li>
+              <li>Admins can change roles and view audit logs.</li>
+              <li>Uploaded images appear as thumbnails.</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="inner" id="modalInner" tabindex="-1"></div>
+  </div>
+
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
+

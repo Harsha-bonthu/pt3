@@ -1,0 +1,62 @@
+:root{--bg:#041018;--panel:#0b1722;--muted:#cbd5e1;--accent:#00d1b2;--accent-2:#ff8a00}
+body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;margin:0;background:linear-gradient(180deg,var(--bg) 0%, var(--panel) 60%);color:#e6eef8}
+.container{max-width:1100px;margin:0 auto;padding:18px}
+.site-header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:linear-gradient(90deg,rgba(0,20,28,0.95),rgba(3,28,36,0.95));box-shadow:0 8px 30px rgba(2,6,23,0.6);margin-bottom:18px}
+.site-header .logo{font-weight:700;font-size:20px;color:var(--accent)}
+.site-header .subtitle{color:var(--muted);font-size:13px}
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6);margin:12px 0;border:1px solid rgba(255,255,255,0.03)}
+.btn{padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--muted);cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;border:none}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted)}
+.muted{color:var(--muted)}
+.app-grid{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
+.chart-card{padding:12px}
+.items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:12px}
+.item-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);display:flex;gap:12px;align-items:flex-start}
+.item-thumb{width:72px;height:72px;border-radius:8px;background:linear-gradient(180deg,rgba(0,20,24,0.6),rgba(3,24,30,0.6));display:flex;align-items:center;justify-content:center;color:var(--accent-2);font-weight:700}
+.item-meta{flex:1}
+.item-title{font-weight:600;color:#e6f0ff}
+.item-desc{color:var(--muted);font-size:13px;margin-top:6px}
+.item-actions{margin-top:8px}
+.pager{display:flex;gap:8px;align-items:center;margin-top:12px}
+.pager button{padding:6px 8px;border-radius:6px}
+.chart-controls{display:flex;align-items:center;gap:12px}
+.controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.right .card input, .right .card textarea{width:100%;box-sizing:border-box;margin:6px 0;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit}
+.info ul{margin:0;padding-left:16px;color:var(--muted);font-size:13px}
+.sr-only{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px)}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(2,6,23,0.6);align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal .inner{background:linear-gradient(180deg,var(--panel),var(--bg));padding:18px;border-radius:12px;max-width:760px;width:94%;color:#eaf6ff}
+.modal.show{display:flex}
+.modal .close{float:right;background:var(--accent-2);color:#fff;border:none;padding:6px 10px;border-radius:8px;cursor:pointer}
+.modal form input, .modal form textarea, .modal form select{width:100%;box-sizing:border-box;margin:8px 0;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit}
+
+/* focus outline for accessibility */
+button:focus, input:focus, select:focus, textarea:focus { outline: 3px solid rgba(0,209,178,0.18); outline-offset:2px }
+
+/* admin panel styles */
+.admin-list div{display:flex;align-items:center;gap:12px;padding:8px}
+.admin-list select{width:140px}
+
+/* toast */
+#toast-container{position:fixed;right:18px;bottom:18px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.toast{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;padding:10px 14px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.6);animation:toast-in .2s ease}
+@keyframes toast-in{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+
+@media(max-width:900px){
+  .app-grid{grid-template-columns:1fr}
+  .right{order:2}
+}
+
+/* card entrance animation */
+.item-card{opacity:0;transform:translateY(8px);animation:card-in .36s ease forwards}
+.item-card:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(2,6,23,0.6);transition:transform .18s ease, box-shadow .18s ease}
+@keyframes card-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* subtle chart hover */
+.chart-card canvas{transition:transform .2s ease}
+.chart-card canvas:hover{transform:scale(1.01)}
+
+.comments{margin-top:8px;padding:8px;background:linear-gradient(180deg,rgba(3,20,26,0.6),rgba(2,14,20,0.6));border-radius:8px}
+.comment{padding:6px;border-bottom:1px solid rgba(255,255,255,0.02)}
+
