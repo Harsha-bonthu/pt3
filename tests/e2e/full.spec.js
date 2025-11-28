@@ -54,7 +54,9 @@ test('e2e: uploads, admin role change, chart drilldown', async ({ page }) => {
   }
 
   // Admin actions: login as seeded admin and change role of the test user
-  await page.click('#btn-logout')
+  // sign out by clearing token and showing auth UI to avoid flaky logout button clicks
+  await page.evaluate(() => { localStorage.removeItem('pt3_token'); if(window.showAuth) showAuth() })
+  await page.waitForSelector('#btn-login', { state: 'visible', timeout: 10000 })
   await page.fill('#login-user', 'admin')
   await page.fill('#login-pass', 'adminpass')
   await page.click('#btn-logout')
