@@ -64,13 +64,34 @@ test('e2e: uploads, admin role change, chart drilldown', async ({ page }) => {
   const adminToken = apiAdminJson.access_token
   await page.evaluate(t => { localStorage.setItem('pt3_token', t); if(window.showApp) showApp(); if(window.loadItems) loadItems(); }, adminToken)
   // Admin role change via API (more reliable in CI)
-  // Login as admin via API
-  const adminLogin2 = await page.request.post('/api/login', { data: JSON.stringify({ username: 'admin', password: 'adminpass' }), headers: { 'Content-Type': 'application/json' } })
-  const adminLogin2Json = await adminLogin2.json()
-  const adminToken2 = adminLogin2Json.access_token
-  // list users and find the test user we created earlier
-  const usersRes = await page.request.get('/api/admin/users', { headers: { 'Authorization': 'Bearer ' + adminToken2 } })
-  const usersBody = await usersRes.json()
+  // Login as admin via API (perform a small retry if token is rejected by server)
+  let adminToken2 = null
+  async function obtainAdminToken() {
+    const res = await page.request.post('/api/login', { data: JSON.stringify({ username: 'admin', password: 'adminpass' }), headers: { 'Content-Type': 'application/json' } })
+    const body = await res.json()
+    return body && body.access_token ? body.access_token : null
+  }
+
+  adminToken2 = await obtainAdminToken()
+  if (!adminToken2) {
+    // try one more time before failing (helps CI transient failures)
+    adminToken2 = await obtainAdminToken()
+  }
+  if (!adminToken2) {
+    throw new Error('Admin login failed: no access_token returned')
+  }
+
+  // list users and find the test user we created earlier; if token is invalid, re-login once
+  let usersRes = await page.request.get('/api/admin/users', { headers: { 'Authorization': 'Bearer ' + adminToken2 } })
+  let usersBody = await usersRes.json()
+  if (usersRes.status === 401 || (usersBody && usersBody.detail && usersBody.detail.toLowerCase().includes('invalid'))) {
+    // retry obtaining a fresh token and refetch
+    adminToken2 = await obtainAdminToken()
+    if (!adminToken2) throw new Error('Admin re-login failed after invalid token')
+    usersRes = await page.request.get('/api/admin/users', { headers: { 'Authorization': 'Bearer ' + adminToken2 } })
+    usersBody = await usersRes.json()
+  }
+
   // Support multiple response shapes returned by the server: an array OR { users: [...] }
   const users = Array.isArray(usersBody) ? usersBody : (usersBody && Array.isArray(usersBody.users) ? usersBody.users : [])
   const target = users.find(u => u.username === user)
