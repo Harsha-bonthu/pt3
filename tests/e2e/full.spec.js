@@ -70,16 +70,23 @@ test('e2e: uploads, admin role change, chart drilldown', async ({ page }) => {
   const adminToken2 = adminLogin2Json.access_token
   // list users and find the test user we created earlier
   const usersRes = await page.request.get('/api/admin/users', { headers: { 'Authorization': 'Bearer ' + adminToken2 } })
-  const users = await usersRes.json()
+  const usersBody = await usersRes.json()
+  // Support multiple response shapes returned by the server: an array OR { users: [...] }
+  const users = Array.isArray(usersBody) ? usersBody : (usersBody && Array.isArray(usersBody.users) ? usersBody.users : [])
   const target = users.find(u => u.username === user)
-  if(target){
+  if (!target) {
+    // Emit debug info to the test output to help diagnose CI issues
+    console.error('Unexpected /api/admin/users response:', usersBody)
+  }
+
+  if (target) {
     const upd = await page.request.put(`/api/admin/users/${target.id}`, { headers: { 'Authorization': 'Bearer ' + adminToken2, 'Content-Type': 'application/json' }, data: JSON.stringify({ role: 'admin' }) })
     expect(upd.ok()).toBeTruthy()
     const updatedUser = await upd.json()
     expect(updatedUser.role).toBe('admin')
   } else {
     // if user not found, fail the test so we can investigate
-    throw new Error('Test user not found in admin user list')
+    throw new Error(`Test user '${user}' not found in admin user list`)
   }
 
   // Chart drilldown: create an item in a unique category via API (avoid flaky UI interactions)
