@@ -95,7 +95,7 @@ uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
 4. Open the UI
 - Visit `http://127.0.0.1:8000` in your browser.
 
-## Extras added to impress a recruiter
+## Extras added 
 - Edit and delete items from the UI.
 - `/api/me` profile endpoint.
 - Pagination and search on `GET /api/items` via `q`, `limit`, and `offset` query params.
@@ -153,9 +153,4 @@ CI notes:
 - Frontend is intentionally small and focuses on usability. Chart shows counts of items per category.
 - You can switch DB engines by setting `DATABASE_URL` before starting the app.
 
-## Next steps you might ask me to do
-- Add persistent sessions via refresh tokens
-- Add file uploads and richer UI
-- Add tests and CI
 
-If you want, I can also commit these files and run a quick smoke-test server locally.
