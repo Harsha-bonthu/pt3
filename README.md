@@ -47,11 +47,7 @@ npm ci
 npx playwright install --with-deps
 # run e2e
 npm run test:e2e
-```
-
-Demo GIF
-
-See `assets/demo.gif` for a short demo clip (placeholder). Replace with your own recorded clip if desired.
+```.
 
 Demo video
 
