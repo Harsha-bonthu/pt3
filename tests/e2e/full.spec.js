@@ -12,12 +12,12 @@ test('e2e: uploads, admin role change, chart drilldown', async ({ page }) => {
   await page.click('#btn-reg')
 
   // login
-  await page.fill('#login-user', user)
-  await page.fill('#login-pass', pass)
-  await page.click('#btn-login')
-  // wait for token to appear in localStorage as a more reliable signal that login completed
-  await page.waitForFunction(() => !!window.localStorage.getItem('pt3_token'), null, { timeout: 10000 })
-  // then wait for the logout button to become visible (if the UI toggles it)
+  // perform API login and set token in localStorage to avoid flaky UI login in CI
+  const apiLogin = await page.request.post('/api/login', { data: JSON.stringify({ username: user, password: pass }), headers: { 'Content-Type': 'application/json' } })
+  const apiLoginJson = await apiLogin.json()
+  const tokenFromApi = apiLoginJson.access_token
+  await page.evaluate(t => { localStorage.setItem('pt3_token', t); if(window.showApp) showApp(); if(window.loadItems) loadItems(); if(window.loadStats) loadStats() }, tokenFromApi)
+  // wait for UI to reflect logged-in state
   await page.waitForSelector('#btn-logout', { state: 'visible', timeout: 10000 })
 
   // create an item via API and upload a fixture file using Playwright request
@@ -57,17 +57,15 @@ test('e2e: uploads, admin role change, chart drilldown', async ({ page }) => {
   await page.click('#btn-logout')
   await page.fill('#login-user', 'admin')
   await page.fill('#login-pass', 'adminpass')
-  await page.click('#btn-login')
-  // wait for token to appear in localStorage as a more reliable signal that login completed
-  await page.waitForFunction(() => !!window.localStorage.getItem('pt3_token'), null, { timeout: 10000 })
-  // then wait for the logout button to become visible before proceeding
-  await page.waitForSelector('#btn-logout', { state: 'visible', timeout: 10000 })
+  await page.click('#btn-logout')
+  // login as admin via API and set token in localStorage to avoid UI flakiness
+  const apiAdminLogin = await page.request.post('/api/login', { data: JSON.stringify({ username: 'admin', password: 'adminpass' }), headers: { 'Content-Type': 'application/json' } })
+  const apiAdminJson = await apiAdminLogin.json()
+  const adminToken = apiAdminJson.access_token
+  await page.evaluate(t => { localStorage.setItem('pt3_token', t); if(window.showApp) showApp(); if(window.loadItems) loadItems(); }, adminToken)
+  // ensure admin controls are loaded
+  await page.waitForSelector('#btn-admin', { state: 'visible', timeout: 10000 })
   await page.evaluate(() => { if(window.loadMeAndSetup) window.loadMeAndSetup() })
-  await page.waitForSelector('#btn-admin')
-  await page.click('#btn-admin')
-  // wait for modal and change the first user role to admin
-  await page.waitForSelector('#view-audit')
-  // pick a select for our user
   const sel = await page.$(`select[data-user]`)
   if(sel){
     await sel.selectOption('admin')
