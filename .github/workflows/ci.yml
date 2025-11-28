@@ -42,5 +42,7 @@ jobs:
           # Run Playwright serially (single worker) and allow one retry to reduce flakiness in CI
           npx playwright test --config=playwright.config.js --workers=1 --retries=1
       - name: Run tests
+        env:
+          PYTHONPATH: .
         run: |
           pytest -q
